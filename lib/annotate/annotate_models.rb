@@ -584,6 +584,10 @@ module AnnotateModels
       begin
         get_loaded_model(model_path, file) || raise(BadModelFileError.new)
       rescue LoadError
+        if model_path.include?("models/")
+          model_path = model_path.gsub(/models\//, '')
+          retry
+        end
         # this is for non-rails projects, which don't get Rails auto-require magic
         file_path = File.expand_path(file)
         if File.file?(file_path) && Kernel.require(file_path)
